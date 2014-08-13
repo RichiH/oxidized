@@ -11,6 +11,7 @@ module Oxidized
       end
 
       def << output
+        puts "POOP: #{output}" if output.class != Oxidized::String
         @outputs << output
       end
 

@@ -28,22 +28,41 @@ class IOS < Oxidized::Model
     cfg
   end
 
-  cmd 'show version' do |cfg|
-    comment cfg.lines.first
-  end
-
-  cmd 'show inventory' do |cfg|
-    comment cfg
-  end
-
   cmd 'show running-config' do |cfg|
-    cfg = cfg.each_line.to_a[3..-1].join
-    cfg.gsub! /^Current configuration : [^\n]*\n/, ''
-    cfg.sub! /^(ntp clock-period).*/, '! \1'
-    cfg.gsub! /^\ tunnel\ mpls\ traffic-eng\ bandwidth[^\n]*\n*(
+    cfg.type = 'diff'
+    cfg
+  end
+
+  cmd 'show version' do |state|
+    state.type = 'nodiff'
+    state
+  end
+
+  cmd 'show inventory' do |state|
+    state.type = 'nodiff'
+    state
+  end
+
+  cmd 'show running-config' do |state|
+    state = state.each_line.to_a[3..-1].join
+    state.gsub! /^Current configuration : [^\n]*\n/, ''
+    state.sub! /^(ntp clock-period).*/, '! \1'
+    state.gsub! /^\ tunnel\ mpls\ traffic-eng\ bandwidth[^\n]*\n*(
                   (?:\ [^\n]*\n*)*
                   tunnel\ mpls\ traffic-eng\ auto-bw)/mx, '\1'
-    cfg
+    state = Oxidized::String.new state
+    state.type = 'nodiff'
+    state
+  end
+
+  cmd 'show ip bgp sum' do |state|
+    state.type = 'nodiff'
+    state
+  end
+
+  cmd 'show cdp neigh' do |state|
+    state.type = 'nodiff'
+    state
   end
 
   cfg :telnet do
