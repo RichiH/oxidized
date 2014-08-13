@@ -140,7 +140,7 @@ module Oxidized
       end
       procs[:post].each do |post_proc|
         out = instance_eval(&post_proc)
-        puts "POST: #{out}" unless out.class == Oxidized::String
+        puts "POST: #{post_proc.source_location}" unless out.class == Oxidized::String
         outputs << out
       end
       outputs
