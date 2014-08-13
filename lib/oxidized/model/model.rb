@@ -128,15 +128,20 @@ module Oxidized
       outputs = Outputs.new
       procs = self.class.procs
       procs[:pre].each do |pre_proc|
-        outputs << instance_eval(&pre_proc)
+        out = instance_eval(&pre_proc)
+        puts "PRE: #{out}" unless out.class == Oxidized::String
+        outputs << out
       end
       self.class.cmds[:cmd].each do |command, block|
         out = cmd command, &block
         return false unless out
+        puts "CMD: #{command}" unless out.class == Oxidized::String
         outputs << out
       end
       procs[:post].each do |post_proc|
-        outputs << instance_eval(&post_proc)
+        out = instance_eval(&post_proc)
+        puts "POST: #{out}" unless out.class == Oxidized::String
+        outputs << out
       end
       outputs
     end
